@@ -44,7 +44,7 @@ Example
     /* Release the DOM tree */
     lv_svg_node_delete(svg_doc);
 
-`lv_image` also supports SVG images, For example:
+`lv_image` also supports SVG images.  For example:
 
 .. code-block:: c
 
@@ -59,4 +59,4 @@ API
 
 .. API equals:  lv_svg_load_data
 
-.. API startswith:  lv_svg_parser_
+.. API startswith:  lv_svg_

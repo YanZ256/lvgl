@@ -1,7 +1,5 @@
 .. _lv_image:
 
-.. |deg|    unicode:: U+000B0 .. DEGREE SIGN
-
 ================
 Image (lv_image)
 ================
@@ -9,8 +7,10 @@ Image (lv_image)
 Overview
 ********
 
+.. |deg|    unicode:: U+000B0 .. DEGREE SIGN
+
 Images are Widgets that display images from flash (as arrays) or
-from files. Images can display symbols (``LV_SYMBOL_...``) as well.
+from files. Images can also display symbols (``LV_SYMBOL_...``).
 
 Using the :ref:`Image decoder interface <overview_image_decoder>`, custom image formats
 can be supported as well.
@@ -76,7 +76,7 @@ The internal (pixel array) and external images support 2 transparency
 handling methods:
 
 -  **Alpha byte**: An alpha channel is added to every pixel that contains
-   its opacity, typically a byte.  It is the 'A' in the the various color formats
+   its opacity, typically a byte.  It is the 'A' in the various color formats
    that contain an alpha channel, such as ARGB8888, ARGB8565, ARGB1555, etc.
 -  **Indexed transparent color**:  a specific index in a color palette serves to
    signal transparency for each pixel that uses it.
@@ -84,8 +84,7 @@ handling methods:
 Palette and Alpha index
 -----------------------
 
-Besides the *True color* (RGB) color format, the following formats are
-supported:
+Besides RGB888 and ARGB8888 color formats, the following formats are supported:
 
 - **Indexed**: Image has a color palette, and each pixel is an index into that palette.
 - **Alpha indexed**: The values stored at pixel positions are alpha (opacity) values.
@@ -181,6 +180,8 @@ the image source is aligned inside the Widget.
 - :cpp:enumerator:`LV_IMAGE_ALIGN_CENTER`
 - :cpp:enumerator:`LV_IMAGE_ALIGN_STRETCH`
 - :cpp:enumerator:`LV_IMAGE_ALIGN_TILE`
+- :cpp:enumerator:`LV_IMAGE_ALIGN_CONTAIN`
+- :cpp:enumerator:`LV_IMAGE_ALIGN_COVER`
 
 Any ``offset`` value is applied after the image source is aligned. For example setting
 an offset of ``y=-10`` with ``align`` == :cpp:enumerator:`LV_IMAGE_ALIGN_CENTER` will
@@ -190,8 +191,22 @@ To automatically scale or tile the image, pass one of these ``align`` values:
 
 - :cpp:enumerator:`LV_IMAGE_ALIGN_STRETCH` Set X and Y scale to fill the Widget's area
 - :cpp:enumerator:`LV_IMAGE_ALIGN_TILE` Tile image to fill Widget's area. Offset is applied to shift the tiling.
+- :cpp:enumerator:`LV_IMAGE_ALIGN_CONTAIN` The image keeps its aspect ratio, but is resized to the maximum size that fits within the Widget's area.
+- :cpp:enumerator:`LV_IMAGE_ALIGN_COVER` The image keeps its aspect ratio and fills the Widget's area.
 
+Data binding
+------------
 
+To get familiar with observers, subjects, and data bindings in general visit the
+:ref:`Observer <observer_how_to_use>` page.
+
+This method of subscribing to a pointer Subject affects a Image Widget's source (``src``)
+value directly.  Note that this is a one-way binding (Subject ==> Widget) so when
+the subject changes, the Image will be updated too.
+
+It supports only pointer subjects.
+
+- :cpp:expr:`lv_image_bind_src(img, &subject)`
 
 .. _lv_image_events:
 

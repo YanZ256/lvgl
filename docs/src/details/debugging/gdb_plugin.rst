@@ -40,6 +40,7 @@ The plugin provides the following commands.
 
 - ``dump obj``: Dump the object tree.
 - ``info style``: Show the object's style.
+- ``info draw_unit``: Display all current drawing unit information.
 
 
 Dump obj tree
@@ -79,7 +80,7 @@ Connect to Debugger
 
 This command provides the ability to connect and debug GDB Python Script using IDE.
 
-Connect to ``PyCharm`` / ``VSCode`` / ``Eclipse(not support yet)``
+Connect to ``PyCharm`` / ``VSCode`` / ``Eclipse (not supported yet)``
 
 ``debugger -t pycharm``
 

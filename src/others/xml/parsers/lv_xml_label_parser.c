@@ -56,8 +56,24 @@ void lv_xml_label_apply(lv_xml_parser_state_t * state, const char ** attrs)
         const char * value = attrs[i + 1];
 
         if(lv_streq("text", name)) lv_label_set_text(item, value);
+        else if(lv_streq("long_mode", name)) lv_label_set_long_mode(item, long_mode_text_to_enum_value(value));
+#if LV_USE_TRANSLATION
+        if(lv_streq("text-translated", name)) lv_label_set_text(item, lv_tr(value));
+#endif
         if(lv_streq("long_mode", name)) lv_label_set_long_mode(item, long_mode_text_to_enum_value(value));
-        if(lv_streq("bind_text", name)) lv_label_bind_text(item, lv_xml_get_subject(&state->ctx, value), NULL);
+        else if(lv_streq("bind_text", name)) {
+            lv_subject_t * subject = lv_xml_get_subject(&state->scope, value);
+            if(subject == NULL) {
+                LV_LOG_WARN("Subject \"%s\" doesn't exist in label bind_text", value);
+                continue;
+            }
+            const char * fmt = lv_xml_get_value_of(attrs, "bind_text-fmt");
+            if(fmt) {
+                fmt = lv_strdup(fmt);
+                lv_obj_add_event_cb(item, lv_event_free_user_data_cb, LV_EVENT_DELETE, (void *) fmt);
+            }
+            lv_label_bind_text(item, subject, fmt);
+        }
     }
 }
 

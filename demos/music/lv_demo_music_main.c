@@ -699,7 +699,7 @@ static void track_load(uint32_t id)
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, album_image_obj);
-    lv_anim_set_values(&a, lv_obj_get_style_image_opa(album_image_obj, 0), LV_OPA_TRANSP);
+    lv_anim_set_values(&a, lv_obj_get_style_image_opa(album_image_obj, LV_PART_MAIN), LV_OPA_TRANSP);
     lv_anim_set_exec_cb(&a, album_fade_anim_cb);
     lv_anim_set_duration(&a, 500);
     lv_anim_start(&a);
@@ -799,7 +799,7 @@ static void spectrum_draw_event_cb(lv_event_t * e)
         lv_layer_t * layer = lv_event_get_layer(e);
 
         lv_opa_t opa = lv_obj_get_style_opa_recursive(obj, LV_PART_MAIN);
-        if(opa < LV_OPA_MIN) return;
+        if(opa <= LV_OPA_MIN) return;
 
         lv_point_t center;
         lv_area_t obj_coords;

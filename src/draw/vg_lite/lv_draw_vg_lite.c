@@ -1,5 +1,5 @@
 /**
- * @file lv_vg_lite_draw.c
+ * @file lv_draw_vg_lite.c
  *
  */
 
@@ -74,7 +74,7 @@ void lv_draw_vg_lite_init(void)
 
     lv_vg_lite_image_dsc_init(unit);
 #if LV_USE_VECTOR_GRAPHIC
-    lv_vg_lite_grad_init(unit, LV_VG_LITE_GRAD_CACHE_CNT);
+    unit->grad_ctx = lv_vg_lite_grad_ctx_create(LV_VG_LITE_GRAD_CACHE_CNT, unit);
     lv_vg_lite_stroke_init(unit, LV_VG_LITE_STROKE_CACHE_CNT);
 #endif
     lv_vg_lite_path_init(unit);
@@ -133,14 +133,14 @@ static void draw_execute(lv_draw_vg_lite_unit_t * u)
     vg_lite_matrix_t layer_matrix;
     lv_vg_lite_matrix(&layer_matrix, &t->matrix);
     lv_vg_lite_matrix_multiply(&u->global_matrix, &layer_matrix);
+#endif
 
-    /* Crop out extra pixels drawn due to scaling accuracy issues */
     if(vg_lite_query_feature(gcFEATURE_BIT_VG_SCISSOR)) {
+        /* Crop out extra pixels drawn due to scaling accuracy issues */
         lv_area_t scissor_area = layer->phy_clip_area;
         lv_area_move(&scissor_area, -layer->buf_area.x1, -layer->buf_area.y1);
-        lv_vg_lite_set_scissor_area(&scissor_area);
+        lv_vg_lite_set_scissor_area(u, &scissor_area);
     }
-#endif
 
     switch(t->type) {
         case LV_DRAW_TASK_TYPE_LETTER:
@@ -221,7 +221,7 @@ static int32_t draw_dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
 
     draw_execute(u);
 
-    u->task_act->state = LV_DRAW_TASK_STATE_READY;
+    u->task_act->state = LV_DRAW_TASK_STATE_FINISHED;
     u->task_act = NULL;
 
     /*The draw unit is free now. Request a new dispatching as it can get a new task*/
@@ -277,9 +277,12 @@ static int32_t draw_evaluate(lv_draw_unit_t * draw_unit, lv_draw_task_t * task)
             return 0;
     }
 
-    /* The draw unit is able to draw this task. */
-    task->preference_score = 80;
-    task->preferred_draw_unit_id = VG_LITE_DRAW_UNIT_ID;
+    if(task->preference_score > 80) {
+        /* The draw unit is able to draw this task. */
+        task->preference_score = 80;
+        task->preferred_draw_unit_id = VG_LITE_DRAW_UNIT_ID;
+    }
+
     return 1;
 }
 
@@ -289,7 +292,7 @@ static int32_t draw_delete(lv_draw_unit_t * draw_unit)
 
     lv_vg_lite_image_dsc_deinit(unit);
 #if LV_USE_VECTOR_GRAPHIC
-    lv_vg_lite_grad_deinit(unit);
+    lv_vg_lite_grad_ctx_delete(unit->grad_ctx);
     lv_vg_lite_stroke_deinit(unit);
 #endif
     lv_vg_lite_path_deinit(unit);

@@ -42,12 +42,12 @@ typedef struct {
     bool initialized;
     bool independent_image_heap;
 
-    lv_draw_buf_malloc_cb malloc_cb;
-    lv_draw_buf_free_cb free_cb;
+    lv_draw_buf_malloc_cb_t malloc_cb;
+    lv_draw_buf_free_cb_t free_cb;
 
 #if LV_NUTTX_DEFAULT_DRAW_BUF_USE_INDEPENDENT_IMAGE_HEAP
-    lv_draw_buf_malloc_cb malloc_cb_default;
-    lv_draw_buf_free_cb free_cb_default;
+    lv_draw_buf_malloc_cb_t malloc_cb_default;
+    lv_draw_buf_free_cb_t free_cb_default;
 #endif
 } lv_nuttx_ctx_image_cache_t;
 /**********************
@@ -97,6 +97,8 @@ void lv_nuttx_image_cache_init(bool use_independent_image_heap)
 
 void lv_nuttx_image_cache_deinit(void)
 {
+    lv_draw_buf_handlers_t * handlers = image_cache_draw_buf_handlers;
+
     if(ctx->independent_image_heap == false) goto FREE_CONTEXT;
     if(ctx->initialized == false) goto FREE_CONTEXT;
 
@@ -104,7 +106,6 @@ void lv_nuttx_image_cache_deinit(void)
     free(ctx->mem);
 
 FREE_CONTEXT:
-    lv_draw_buf_handlers_t * handlers = image_cache_draw_buf_handlers;
     handlers->buf_malloc_cb = ctx->malloc_cb;
     handlers->buf_free_cb = ctx->free_cb;
 

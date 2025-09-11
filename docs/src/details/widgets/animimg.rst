@@ -30,8 +30,11 @@ Usage
 Image sources
 -------------
 
-To set the image animation images sources, use
+To set the image animation image sources, use
 :cpp:expr:`lv_animimg_set_src(animimg, dsc[], num)`.
+
+To set the images source for flip playback of animation image, use
+:cpp:expr:`lv_animimg_set_src_reverse(animimg, dsc[], num)`.
 
 Using the inner animation
 -------------------------

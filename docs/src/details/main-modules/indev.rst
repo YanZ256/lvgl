@@ -194,7 +194,7 @@ This must be done in the user defined indev ``read_cb``. This will iterate over 
 recognized or ended gesture. For now only one multi-touch gesture can be recognized/ended at a time.
 
 Once the recognizers are updated, calling ``lv_indev_gesture_recognizers_set_data`` will update the ``lv_indev_data_t`` structure.
-It is meant to be done in the indev ``read_cb``. This allows the future ``lv_event_t`` to eb filled with multi-touch gesture info.
+It is meant to be done in the indev ``read_cb``. This allows the future ``lv_event_t`` to be filled with multi-touch gesture info.
 
 Here is an example of the ``read_cb``:
 
@@ -332,9 +332,9 @@ Once a gesture is recognized or ended, a ``LV_EVENT_GESTURE`` is sent. The user 
 gather more information about the gesture:
 
 - ``lv_event_get_gesture_type(lv_event_t * gesture_event)``: Get the type of the gesture. To be
-used to check which multi-touch gesture is currently reported.
+  used to check which multi-touch gesture is currently reported.
 - ``lv_indev_gesture_state_t lv_event_get_gesture_state(lv_event_t * gesture_event, lv_indev_gesture_type_t type)``: Get the
-state of the gesture. It can be one of those:
+  state of the gesture. It can be one of those:
 
   - ``LV_INDEV_GESTURE_STATE_NONE``: The gesture is not active.
   - ``LV_INDEV_GESTURE_STATE_RECOGNIZED``: The gesture is recognized and can be used.
@@ -397,7 +397,7 @@ device *when* the knob is being turned, and *in which direction*.
 With an encoder your application can receive events from the following:
 
 1.  press of its button,
-2.  oong-press of its button,
+2.  long-press of its button,
 3.  turn left, and
 4.  turn right.
 
@@ -549,7 +549,7 @@ Using Buttons with Encoder Logic
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In addition to standard encoder behavior, you can also utilize its logic
-to navigate(focus) and edit widgets using buttons. This is especially
+to navigate (focus) and edit widgets using buttons. This is especially
 handy if you have only few buttons available, or you want to use other
 buttons in addition to an encoder wheel.
 
@@ -558,7 +558,7 @@ You need to have 3 buttons available:
 - :cpp:enumerator:`LV_KEY_ENTER`: will simulate press or pushing of the encoder button.
 - :cpp:enumerator:`LV_KEY_LEFT`: will simulate turning encoder left.
 - :cpp:enumerator:`LV_KEY_RIGHT`: will simulate turning encoder right.
-- other keys will be passed to the focused widget.
+- Other keys will be passed to the focused widget.
 
 If you hold the keys it will simulate an encoder advance with period
 specified in ``indev_drv.long_press_repeat_time``.
@@ -639,14 +639,6 @@ The default value of the following parameters can be changed in :cpp:type:`lv_in
   can be changed by calling ``lv_timer_...()`` functions. :c:macro:`LV_DEF_REFR_PERIOD`
   in ``lv_conf.h`` sets the default read period.
 
-Feedback
---------
-
-Besides ``read_cb`` a ``feedback_cb`` callback can be also specified in
-:cpp:type:`lv_indev_t`. ``feedback_cb`` is called when any type of event is sent
-by input devices (independently of their type).  This allows generating
-feedback for the user, e.g. to play a sound on :cpp:enumerator:`LV_EVENT_CLICKED`.
-
 Buffered Reading
 ----------------
 
@@ -659,6 +651,10 @@ that buffers measured data. In ``read_cb`` you can report the buffered
 data instead of directly reading the input device. Setting the
 ``data->continue_reading`` flag will tell LVGL there is more data to
 read and it should call ``read_cb`` again.
+
+If the driver can provide precise timestamps for buffered events, it can
+overwrite ``data->timestamp``. By default, this is initialized to
+:cpp:func:`lv_tick_get()` just before invoking ``read_cb``.
 
 Switching the Input Device to Event-Driven Mode
 -----------------------------------------------

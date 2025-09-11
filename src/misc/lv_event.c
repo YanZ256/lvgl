@@ -229,9 +229,20 @@ void lv_event_stop_bubbling(lv_event_t * e)
     e->stop_bubbling = 1;
 }
 
+void lv_event_stop_trickling(lv_event_t * e)
+{
+    e->stop_trickling = 1;
+}
+
 void lv_event_stop_processing(lv_event_t * e)
 {
     e->stop_processing = 1;
+}
+
+void lv_event_free_user_data_cb(lv_event_t * e)
+{
+    void * p = lv_event_get_user_data(e);
+    lv_free(p);
 }
 
 uint32_t lv_event_register_id(void)
@@ -335,6 +346,7 @@ const char * lv_event_code_get_name(lv_event_code_t code)
             ENUM_CASE(EVENT_FLUSH_WAIT_FINISH);
 
             ENUM_CASE(EVENT_VSYNC);
+            ENUM_CASE(EVENT_VSYNC_REQUEST);
 
         /* Special event flags */
         case LV_EVENT_LAST:
